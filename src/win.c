@@ -1539,27 +1539,27 @@ static void win_determine_blur_background(session_t *ps, struct managed_win *w) 
  * Determine if a window should have rounded corners.
  */
 static void win_determine_rounded_corners(session_t *ps, struct managed_win *w) {
-	if (ps->o.corner_radius == 0) {
-		w->corner_radius = 0;
-		return;
-	}
+    if (ps->o.corner_radius == 0) {
+        w->corner_radius = 0;
+        return;
+    }
 
-	void *val = NULL;
+    void *val = NULL;
 
-	// Don't round full screen windows & excluded windows
-	if ((w && win_is_fullscreen(ps, w)) ||
-	    c2_match(ps, w, ps->o.rounded_corners_blacklist, NULL)) {
-		w->corner_radius = 0;
-		log_debug("Not rounding corners for window %#010x", w->base.id);
-	} else if (c2_match(ps, w, ps->o.corner_rules, &val)) {
-		w->corner_radius = val;
-	} else {
-		w->corner_radius = ps->o.corner_radius;
-		log_debug("Rounding corners for window %#010x", w->base.id);
-		// Initialize the border color to an invalid value
-		w->border_col[0] = w->border_col[1] = w->border_col[2] =
-		    w->border_col[3] = -1.0F;
-	}
+    // Don't round full screen windows & excluded windows
+    if ((w && win_is_fullscreen(ps, w)) ||
+        c2_match(ps, w, ps->o.rounded_corners_blacklist, NULL)) {
+        w->corner_radius = 0;
+        log_debug("Not rounding corners for window %#010x", w->base.id);
+    } else if (c2_match(ps, w, ps->o.corner_rules, &val)) {
+        w->corner_radius = val ? *((int *)val) : 0;
+    } else {
+        w->corner_radius = ps->o.corner_radius;
+        log_debug("Rounding corners for window %#010x", w->base.id);
+        // Initialize the border color to an invalid value
+        w->border_col[0] = w->border_col[1] = w->border_col[2] =
+            w->border_col[3] = -1.0F;
+    }
 }
 
 /**
